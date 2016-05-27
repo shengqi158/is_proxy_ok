@@ -14,11 +14,12 @@ import sys
 import urllib2
 import optparse
 import re
+import bs4
 
 def get_proxys(file_name):
     """这里的文件内容可以是从cn-proxy.com复制过来的数据"""
     proxys = []
-    ip_reg = re.compile(r'^\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}', re.I)
+    ip_reg = re.compile(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}', re.I)
     try:
         with open(file_name, 'r') as fd_proxy:
             for line in fd_proxy:
@@ -47,7 +48,14 @@ def test_connection(proxy):
         req.set_proxy(proxy, host_type)
         response = urllib2.urlopen(req)
         if response and response.getcode() == 200:
-            return True
+            data = response.read()
+            soup = bs4.BeautifulSoup(data)
+            title = soup.find_all("title")
+            if title:
+                name_baiduyixia = title[0].get_text()
+                search_obj = re.search(u'\u767e\u5ea6\u4e00\u4e0b',name_baiduyixia)
+                if search_obj:
+                    return True
         else:
             return False
     except Exception,e:
