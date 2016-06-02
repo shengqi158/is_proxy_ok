@@ -16,6 +16,7 @@ import optparse
 import re
 import bs4
 from multiprocessing.dummy import Pool as ThreadPool
+from multiprocessing import Pool
 
 def get_proxys(file_name, thread_num=5):
     """这里的文件内容可以是从cn-proxy.com复制过来的数据"""
@@ -31,7 +32,8 @@ def get_proxys(file_name, thread_num=5):
                         proxy = '%s:%s' %(ip, port)
                         print 'proxy',proxy
 #                        if test_connection(proxy):
-                        proxys.append(proxy)
+                        if proxy:
+                            proxys.append(proxy)
         pool = ThreadPool(thread_num)
         results = pool.map(test_connection,proxys)
         pool.close()
