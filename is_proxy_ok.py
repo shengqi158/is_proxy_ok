@@ -38,7 +38,7 @@ def get_proxys(file_name, thread_num=5):
         pool.join()
         
         proxys = list(set(results))
-        proxys = sorted(proxys)
+        proxys = sorted(proxys,key=lambda x:x.split(".")[0])
     
     except Exception,e:
         print 'error',e
